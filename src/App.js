@@ -1,25 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
+import LoginPage from './containers/LoginPage.jsx';
+import ListingPage from './containers/ListingPage.jsx';
+import employeeReducer from './reducers/employee';
 import './App.css';
+
+const middlewares = [thunk];
+
+if (process.env.NODE_ENV === 'development') {
+  middlewares.push(logger);
+}
+
+const store = createStore(employeeReducer, applyMiddleware(...middlewares));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <div className="App">
+          {/* <header className="App-header">
+            LOGIN
+          </header> */}
+          <Route path='/' exact component={LoginPage} />
+          <Route path='/employee-list' exact component={ListingPage} />
+        </div>
+      </Router>
+    </Provider>
   );
 }
 
